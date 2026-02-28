@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriDevice Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --white: #ffffff;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-left: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid var(--border-color);
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+        .status {
+            padding: 4px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-TRUSTED { background: #dcfce7; color: #166534; }
+        .status-PENDING { background: #fef9c3; color: #854d0e; }
+        .status-REVOKED { background: #fee2e2; color: #991b1b; }
+        .status-STALE { background: #f1f5f9; color: #475569; }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-outline-success { border-color: var(--success); color: var(--success); background: none; }
+        .btn-outline-success:hover { background: var(--success); color: white; }
+        .btn-outline-danger { border-color: var(--danger); color: var(--danger); background: none; }
+        .btn-outline-danger:hover { background: var(--danger); color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>VeriDevice Inventory</h1>
+        <nav>
+            <a href="{% url 'register_device' %}">Register Device</a>
+            <a href="{% url 'audit_log_list' %}">Audit Logs</a>
+        </nav>
+    </header>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Device Name</th>
+                <th>Platform</th>
+                <th>Status</th>
+                <th>Last Seen</th>
+                <th>Owner</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr>
+                <td><strong>{{ device.device_name }}</strong></td>
+                <td>{{ device.platform }}</td>
+                <td><span class="status status-{{ device.trust_status }}">{{ device.trust_status }}</span></td>
+                <td>{{ device.last_seen_at|default:"-" }}</td>
+                <td>{{ device.owner_email|default:"-" }}</td>
+                <td>
+                    {% if device.trust_status == "PENDING" %}
+                        <a href="{% url 'device_action' device.id 'approve' %}"><button class="btn btn-outline-success">Approve</button></a>
+                        <a href="{% url 'device_action' device.id 'revoke' %}"><button class="btn btn-outline-danger">Revoke</button></a>
+                    {% elif device.trust_status == "TRUSTED" %}
+                         <a href="{% url 'device_action' device.id 'revoke' %}"><button class="btn btn-outline-danger">Revoke</button></a>
+                    {% elif device.trust_status == "REVOKED" %}
+                         <a href="{% url 'device_action' device.id 'approve' %}"><button class="btn btn-outline-success">Approve</button></a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: #94a3b8;">No devices registered.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

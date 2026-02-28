@@ -1,0 +1,3 @@
+name = "veridevice-worker-1"
+main = "src/index.js"             # Adjust path as necessary
+compatibility_date = "2025-02-16"

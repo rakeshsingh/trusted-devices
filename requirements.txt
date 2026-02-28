@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+tortoise-orm
+pydantic
+pydantic-settings
+pycryptodome
+passlib
+pyjwt
+python-multipart
+fastapi-pagination
+aerich
+aiodns
+d1-tortoise
