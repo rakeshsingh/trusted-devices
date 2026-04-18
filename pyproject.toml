@@ -1,16 +1,17 @@
 [project]
-name = "trusted-devices"
+name = "trusted-devices-gui"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Veridevice Management Console"
+readme = "README_GUI.md"
 requires-python = ">=3.14"
 dependencies = [
-    "aerich>=0.9.2",
-    "aiodns>=4.0.0",
-    "fastapi>=0.129.0",
-    "pycryptodome>=3.23.0",
-    "pydantic>=2.12.5",
-    "pydantic-settings>=2.13.0",
-    "pyjwt>=2.11.0",
-    "uvicorn>=0.41.0",
+    "nicegui",
+    "httpx",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "respx",
 ]
